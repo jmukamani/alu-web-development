@@ -39,13 +39,21 @@
     );
   }
   
+<<<<<<< HEAD
   .nav {
+=======
+  .navlinks {
+>>>>>>> 8acf310b0103e740d28d68f0a8586d98fc657933
     width: 234px;
     display: flex;
     justify-content: space-between;
   }
   
+<<<<<<< HEAD
   .nav{
+=======
+  .navlink {
+>>>>>>> 8acf310b0103e740d28d68f0a8586d98fc657933
     text-transform: uppercase;
     text-decoration: none;
     color: white;
@@ -63,7 +71,11 @@
     padding-top: 50px;
   }
   
+<<<<<<< HEAD
   .hero_section {
+=======
+  .hero-and-instructors {
+>>>>>>> 8acf310b0103e740d28d68f0a8586d98fc657933
     height: 970px;
   }
   
