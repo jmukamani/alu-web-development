@@ -1,60 +1,50 @@
-#!/usr/bin/env python3
-"""
-MRU Cache Module
-"""
+#!/usr/bin/python3
+""" MRU Caching """
 
 
 from base_caching import BaseCaching
 
 
 class MRUCache(BaseCaching):
-    """
-    MRU caching system where the most recently
-    used item is discarded
-    when the cache exceeds the limit.
-    """
+    """ Class that inherits from BaseCaching and is a caching system """
 
     def __init__(self):
-        """
-        Initialize the cache system and track the usage order.
-        """
         super().__init__()
-        self.usage_order = []  # To track the usage order of cache items
+        self.head, self.tail = 'head', 'tail'
+        self.next, self.prev = {}, {}
+        self.handle(self.head, self.tail)
+
+    def handle(self, head, tail):
+        """ MRU algorithm, handle elements """
+        self.next[head], self.prev[tail] = tail, head
+
+    def _remove(self, key):
+        """ MRU algorithm, remove element """
+        self.handle(self.prev[key], self.next[key])
+        del self.prev[key], self.next[key], self.cache_data[key]
+
+    def _add(self, key, item):
+        """ MRU algorithm, add element """
+        if len(self.cache_data) > BaseCaching.MAX_ITEMS - 1:
+            print("DISCARD: {}".format(self.prev[self.tail]))
+            self._remove(self.prev[self.tail])
+        self.cache_data[key] = item
+        self.handle(self.prev[self.tail], key)
+        self.handle(key, self.tail)
 
     def put(self, key, item):
-        """
-        Add an item to the cache using the MRU policy.
-        If key or item is None, do nothing.
-        If the cache exceeds MAX_ITEMS,
-        discard the most recently used item.
-        """
-        if key is None or item is None:
-            return
-
-        # If key already exists, remove it to update its usage order
-        if key in self.cache_data:
-            self.usage_order.remove(key)
-
-        self.cache_data[key] = item
-        self.usage_order.append(key)
-
-        # Check if the cache exceeds the limit
-        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            mru_key = self.usage_order.pop()  # The most recently used key is at the end of the list
-            del self.cache_data[mru_key]
-            print(f"DISCARD: {mru_key}")
+        """ Assign to the dictionary """
+        if key and item:
+            if key in self.cache_data:
+                self._remove(key)
+            self._add(key, item)
 
     def get(self, key):
-        """
-        Get an item by key.
-        Return None if the key is None or doesn't exist in cache_data.
-        If the key is found, update its usage order.
-        """
-        if key is None or key not in self.cache_data:
+        """ Return the value linked """
+        if key is None or self.cache_data.get(key) is None:
             return None
-
-        # Update usage order by moving accessed key to the end
-        self.usage_order.remove(key)
-        self.usage_order.append(key)
-
-        return self.cache_data.get(key)
+        if key in self.cache_data:
+            value = self.cache_data[key]
+            self._remove(key)
+            self._add(key, value)
+            return value
